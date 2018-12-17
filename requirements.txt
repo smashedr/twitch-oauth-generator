@@ -1,0 +1,7 @@
+django<3
+django-extensions
+gunicorn
+mysqlclient
+Pillow
+requests
+Werkzeug

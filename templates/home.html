@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+{% block home_active %}active{% endblock %}
+{% block title %}Home{% endblock %}
+{% load home_tags %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+    <div class="row mt-2">
+        <div class="col">
+            <h1>Twitch Oauth Generator</h1>
+
+            <p>To generate a token, you click the button below...</p>
+            <p>You will be taken to twitch and asked to grant the specific permissions.</p>
+
+            <a href="{% url 'oauth:login' %}" class="btn btn-info btn-lg my-2" role="button">GENERATE TOKEN</a>
+
+            <hr>
+
+            <p>Currently configured settings:</p>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Setting</th><th>Setting</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Client ID</td><td>{% get_config 'twitch' 'client_id' %}</td>
+                </tr>
+                <tr>
+                    <td>Redirect URI</td><td>{% get_config 'twitch' 'redirect_uri' %}</td>
+                </tr>
+                <tr>
+                    <td>Scope</td><td>{% get_config 'twitch' 'scope' %}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <p>Read more about Twitch OAuth Scopes here: <a href="https://dev.twitch.tv/docs/authentication/#scopes" target="_blank" class="text-info">
+                https://dev.twitch.tv/docs/authentication/#scopes</a>
+            </p>
+
+        </div>
+    </div>
+{% endblock %}

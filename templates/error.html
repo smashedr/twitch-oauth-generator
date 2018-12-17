@@ -1,0 +1,20 @@
+{% extends "main.html" %}
+{% block title %}Error{% endblock %}
+{% load home_tags %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+    <div class="row mt-2">
+        <div class="col">
+            <h1>Twitch Oauth Generator</h1>
+
+            <h3>Error</h3>
+
+            <p>An error occured during auth. This should be reported a bug.</p>
+
+            <p><a href="{% url 'home:index' %}">Go Back Home</a></p>
+
+        </div>
+    </div>
+{% endblock %}
