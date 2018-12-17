@@ -18,7 +18,7 @@ TWITCH_RESPONSE_TYPE = CONFIG['twitch']['response_type']
 TWITCH_GRANT_TYPE = CONFIG['twitch']['grant_type']
 TWITCH_SCOPE = CONFIG['twitch']['scope']
 
-DISCORD_HOOK = CONFIG['discord']['scope']
+DISCORD_HOOK = CONFIG['discord']['webhook_url']
 
 LOGIN_URL = '/oauth/'
 STATIC_URL = '/static/'
