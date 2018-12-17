@@ -41,23 +41,19 @@
             <div class="col">
                 <nav class="navbar navbar-expand-md navbar-dark bg-dark mt-2">
                     <a class="navbar-brand" href="{% url 'home:index' %}">Twitch</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03"
-                            aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav"
+                            aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
-                    <div class="collapse navbar-collapse" id="navbarColor02">
+                    <div class="collapse navbar-collapse" id="main-nav">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item {% block home_active %}{% endblock %}">
                                 <a class="nav-link" href="{% url 'home:index' %}">Home</a>
                             </li>
                         </ul>
 
-                        {% if not request.user.is_authenticated %}
-{#                            <a href="{% url 'oauth:login' %}?next={{ request.path }}" class="btn btn-outline-info" role="button">#}
-{#                                Log In#}
-{#                                <i class="fas fa-sign-in-alt"></i></a>#}
-                        {% else %}
+                        {% if request.user.is_authenticated %}
                             <a href="https://www.twitch.tv/settings/profile" target="_blank" class="text-info mr-3">
                                 {{ request.user.username }}</a>
                             {% if user.is_staff %}
@@ -75,14 +71,24 @@
         </div>
     {% endblock %}
 
+    {% block messages %}
+        <div class="row">
+            <div class="col">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.extra_tags }} alert-dismissible my-1" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            {{ message.message|safe }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endblock %}
+
     {% block body %}{% endblock %}
 </div>
-
-<!-- JS imported at end to improve page loads -->
-<script type="text/javascript" src="{% static 'bootstrap/jquery.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'bootstrap/popper.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'main/js/main.js' %}"></script>
 
 {% if request.user.is_authenticated %}
     <form id="log-out" action="{% url 'oauth:logout' %}" method="POST">
@@ -90,6 +96,14 @@
         <input type="hidden" name="next" value="{{ request.get_full_path }}">
     </form>
 {% endif %}
+
+<!-- JS imported at end to improve page loads -->
+<script type="text/javascript" src="{% static 'bootstrap/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/popper.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'main/js/main.js' %}"></script>
+
+{% block tail %}{% endblock %}
 
 </body>
 </html>

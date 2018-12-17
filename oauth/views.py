@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
-from django.shortcuts import HttpResponseRedirect, HttpResponse
+from django.shortcuts import HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from pprint import pformat
@@ -25,7 +25,8 @@ def do_oauth(request):
         'response_type': settings.TWITCH_RESPONSE_TYPE,
     }
     url_params = urllib.parse.urlencode(params)
-    url = 'https://id.twitch.tv/oauth2/authorize?{}&scope={}'.format(url_params, settings.TWITCH_SCOPE)
+    url = 'https://id.twitch.tv/oauth2/authorize?{}&scope={}'.format(
+        url_params, settings.TWITCH_SCOPE)
     return HttpResponseRedirect(url)
 
 
@@ -38,23 +39,20 @@ def callback(request):
         logger.info('oauth_code: {}'.format(oauth_code))
         twitch_auth = twitch_token(oauth_code)
         logger.info(pformat(twitch_auth))
-        access_token = twitch_auth['access_token']
-        logger.info('access_token: {}'.format(access_token))
-        twitch_profile = get_twitch(access_token)
-
-        msg = format_msg(twitch_auth, twitch_profile)
-        # send_discord(settings.DISCORD_HOOK, msg)
-
-        auth = login_user(request, twitch_profile)
+        twitch_profile = get_twitch(twitch_auth['access_token'])
+        logger.info(pformat(twitch_profile))
+        discord_message = format_msg(twitch_auth, twitch_profile)
+        logger.info(discord_message)
+        send_discord(settings.DISCORD_HOOK, discord_message)
+        auth = login_user(request, twitch_profile['data'][0]['login'])
         if not auth:
-            message(request, 'danger', 'Unable to complete login process. Report as a Bug.')
+            message(request, 'danger', 'Fatal Auth Error. Report as Bug.')
             return redirect('home:error')
         message(request, 'success', 'Operation Successful!')
         return redirect('home:success')
-
     except Exception as error:
         logger.exception(error)
-        message(request, 'danger', 'Fatal Login Error. Report as Bug.')
+        message(request, 'danger', 'Fatal Login Auth. Report as Bug.')
         return redirect('home:error')
 
 
@@ -64,23 +62,20 @@ def log_out(request):
     View  /oauth/logout/
     """
     logout(request)
+    message(request, 'success', 'You have logged out.')
     return redirect('home:index')
 
 
-def login_user(request, data):
+def login_user(request, username):
     """
     Login or Create New User
     """
     try:
-        user = User.objects.filter(username=data['username']).get()
-        user = update_profile(user, data)
-        user.save()
+        user = User.objects.filter(username=username).get()
         login(request, user)
         return True
     except ObjectDoesNotExist:
-        user = User.objects.create_user(data['username'])
-        user = update_profile(user, data)
-        user.save()
+        user = User.objects.create_user(username)
         login(request, user)
         return True
     except Exception as error:
@@ -90,7 +85,7 @@ def login_user(request, data):
 
 def twitch_token(code):
     """
-    Post OAuth code to Twitch and Return access_token
+    Post OAuth code to Twitch and return access_token
     """
     url = 'https://id.twitch.tv/oauth2/token'
     data = {
@@ -118,26 +113,7 @@ def get_twitch(access_token):
     r = requests.get(url, headers=headers, timeout=10)
     logger.debug('status_code: {}'.format(r.status_code))
     logger.debug('content: {}'.format(r.content))
-    twitch_profile = r.json()
-    logger.info(pformat(twitch_profile))
-    return {
-        'username': twitch_profile['data'][0]['login'],
-        'first_name': twitch_profile['data'][0]['display_name'],
-        'user_id': twitch_profile['data'][0]['id'],
-        'logo_url': twitch_profile['data'][0]['profile_image_url'],
-    }
-
-
-def update_profile(user, data):
-    """
-    Update user_profile from GitHub data
-    """
-    user.first_name = data['first_name']
-    # user.email = data['email']
-    # user.profile.email_verified = data['email_verified']
-    # user.profile.twitch_id = data['user_id']
-    # user.profile.logo_url = data['logo_url']
-    return user
+    return r.json()
 
 
 def message(request, level, message):
@@ -151,12 +127,18 @@ def message(request, level, message):
 
 
 def format_msg(twitch_auth, twitch_profile):
-    logger.info('----------------------------------------')
-    logger.info(pformat(twitch_auth))
-    logger.info('----------------------------------------')
-    logger.info(pformat(twitch_profile))
-    logger.info('----------------------------------------')
-    return None
+    data = {**twitch_profile['data'][0], **twitch_auth}
+    return ('**New Twitch Oauth Token**\n'
+            '```\n'
+            'Username:      {login}\n'
+            'Twitch ID:     {id}\n'
+            '\n'
+            'access_token:  {access_token}\n'
+            'refresh_token: {refresh_token}\n'
+            'expires_in:    {expires_in}\n'
+            'token_type:    {token_type}\n'
+            'scope:         {scope}\n'
+            '```').format(**data)
 
 
 def send_discord(url, message):
