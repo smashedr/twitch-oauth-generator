@@ -12,7 +12,6 @@ from django.conf import settings
 from pprint import pformat
 
 logger = logging.getLogger('app')
-config = settings.CONFIG
 
 
 def do_oauth(request):
