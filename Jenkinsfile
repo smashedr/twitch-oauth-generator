@@ -11,18 +11,18 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }
     environment {
-        env.DEV_PORT = '10184'
-        env.PROD_PORT = '10185'
-        env.DISCORD_ID = "smashed-alerts"
-        env.COMPOSE_FILE = "docker-compose-swarm.yml"
+        DEV_PORT = '10184'
+        PROD_PORT = '10185'
+        DISCORD_ID = "smashed-alerts"
+        COMPOSE_FILE = "docker-compose-swarm.yml"
 
-        env.BUILD_CAUSE = getBuildCause()
-        env.VERSION = getVersion("${GIT_BRANCH}")
-        env.GIT_ORG = getGitGroup("${GIT_URL}")
-        env.GIT_REPO = getGitRepo("${GIT_URL}")
+        BUILD_CAUSE = getBuildCause()
+        VERSION = getVersion("${GIT_BRANCH}")
+        GIT_ORG = getGitGroup("${GIT_URL}")
+        GIT_REPO = getGitRepo("${GIT_URL}")
 
-        env.STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
-        env.SERVICE_NAME = "${STACK_NAME}"
+        STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
+        SERVICE_NAME = "${STACK_NAME}"
     }
     stages {
         stage('Init') {
@@ -47,9 +47,9 @@ pipeline {
                 }
             }
             environment {
-                env.ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
-                env.STACK_NAME = "dev_${STACK_NAME}"
-                env.DOCKER_PORT = "${DEV_PORT}"
+                ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
+                STACK_NAME = "dev_${STACK_NAME}"
+                DOCKER_PORT = "${DEV_PORT}"
             }
             steps {
                 echo "Starting Dev Deploy..."
@@ -68,9 +68,9 @@ pipeline {
                 }
             }
             environment {
-                env.ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
-                env.STACK_NAME = "prod_${STACK_NAME}"
-                env.DOCKER_PORT = "${PROD_PORT}"
+                ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
+                STACK_NAME = "prod_${STACK_NAME}"
+                DOCKER_PORT = "${PROD_PORT}"
             }
             steps {
                 echo "Starting Prod Deploy..."
