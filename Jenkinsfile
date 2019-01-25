@@ -11,18 +11,18 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }
     environment {
-        String DEV_PORT = '10184'
-        String PROD_PORT = '10185'
-        String DISCORD_ID = "smashed-alerts"
-        String COMPOSE_FILE = "docker-compose-swarm.yml"
+        env.DEV_PORT = '10184'
+        env.PROD_PORT = '10185'
+        env.DISCORD_ID = "smashed-alerts"
+        env.COMPOSE_FILE = "docker-compose-swarm.yml"
 
-        String BUILD_CAUSE = getBuildCause()
-        String VERSION = getVersion("${GIT_BRANCH}")
-        String GIT_ORG = getGitGroup("${GIT_URL}")
-        String GIT_REPO = getGitRepo("${GIT_URL}")
+        env.BUILD_CAUSE = getBuildCause()
+        env.VERSION = getVersion("${GIT_BRANCH}")
+        env.GIT_ORG = getGitGroup("${GIT_URL}")
+        env.GIT_REPO = getGitRepo("${GIT_URL}")
 
-        GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
-        GString SERVICE_NAME = "${STACK_NAME}"
+        env.STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
+        env.SERVICE_NAME = "${STACK_NAME}"
     }
     stages {
         stage('Init') {
@@ -47,9 +47,9 @@ pipeline {
                 }
             }
             environment {
-                GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
-                GString STACK_NAME = "dev_${STACK_NAME}"
-                GString DOCKER_PORT = "${DEV_PORT}"
+                env.ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
+                env.STACK_NAME = "dev_${STACK_NAME}"
+                env.DOCKER_PORT = "${DEV_PORT}"
             }
             steps {
                 echo "Starting Dev Deploy..."
@@ -68,9 +68,9 @@ pipeline {
                 }
             }
             environment {
-                GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
-                GString STACK_NAME = "prod_${STACK_NAME}"
-                GString DOCKER_PORT = "${PROD_PORT}"
+                env.ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
+                env.STACK_NAME = "prod_${STACK_NAME}"
+                env.DOCKER_PORT = "${PROD_PORT}"
             }
             steps {
                 echo "Starting Prod Deploy..."
