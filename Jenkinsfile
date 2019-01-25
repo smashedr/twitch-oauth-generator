@@ -11,8 +11,8 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }
     environment {
-        String DEV_PORT = '10123'
-        String PROD_PORT = '10124'
+        String DEV_PORT = '10184'
+        String PROD_PORT = '10185'
         String DISCORD_ID = "smashed-alerts"
         String COMPOSE_FILE = "docker-compose-swarm.yml"
 
