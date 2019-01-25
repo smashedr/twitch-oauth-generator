@@ -2,11 +2,10 @@ import logging
 import requests
 import urllib.parse
 from django.contrib import messages
-from django.contrib.auth import logout, login
-# from django.contrib.auth.models import User
-# from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import redirect
+from django.contrib.auth import logout
+from django.shortcuts import redirect, render
 from django.shortcuts import HttpResponseRedirect
+from django.urls import resolve
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from pprint import pformat
@@ -21,8 +20,9 @@ def do_oauth(request):
     params = {
         'client_id': settings.TWITCH_CLIENT_ID,
         'redirect_uri': settings.TWITCH_REDIRECT_URI,
-        'response_type': settings.TWITCH_RESPONSE_TYPE,
+        'response_type': resolve(request.path_info).url_name,
     }
+    logger.info(pformat(params))
     url_params = urllib.parse.urlencode(params)
     url = 'https://id.twitch.tv/oauth2/authorize?{}&scope={}'.format(
         url_params, settings.TWITCH_SCOPE)
@@ -34,21 +34,22 @@ def callback(request):
     # View  /oauth/callback/
     """
     try:
-        oauth_code = request.GET['code']
-        logger.info('oauth_code: {}'.format(oauth_code))
-        twitch_auth = twitch_token(oauth_code)
-        logger.info(pformat(twitch_auth))
-        twitch_profile = get_twitch(twitch_auth['access_token'])
-        logger.info(pformat(twitch_profile))
-        discord_message = format_msg(twitch_auth, twitch_profile)
-        logger.info(discord_message)
-        send_discord(settings.DISCORD_HOOK, discord_message)
-        # auth = login_user(request, twitch_profile['data'][0]['login'])
-        # if not auth:
-        #     message(request, 'danger', 'Fatal Auth Error. Report as Bug.')
-        #     return redirect('home:error')
-        message(request, 'success', 'Operation Successful!')
-        return redirect('home:success')
+        if 'code' in request.GET:
+            oauth_code = request.GET['code']
+            logger.info('oauth_code: {}'.format(oauth_code))
+            twitch_auth = twitch_token(oauth_code)
+            logger.info(pformat(twitch_auth))
+
+            twitch_profile = get_twitch(twitch_auth['access_token'])
+            logger.info(pformat(twitch_profile))
+            discord_message = format_msg(twitch_auth, twitch_profile)
+            logger.info(discord_message)
+            send_discord(settings.DISCORD_HOOK, discord_message)
+            message(request, 'success', 'Token has been successfully generated! You are all done...')
+            return redirect('home:index')
+        else:
+            message(request, 'success', 'Your Access Token has been generated.')
+            return render(request, 'callback.html')
     except Exception as error:
         logger.exception(error)
         message(request, 'danger', 'Fatal Login Auth. Report as Bug.')
@@ -63,23 +64,6 @@ def log_out(request):
     logout(request)
     message(request, 'success', 'You have logged out.')
     return redirect('home:index')
-
-
-# def login_user(request, username):
-#     """
-#     Login or Create New User
-#     """
-#     try:
-#         user = User.objects.filter(username=username).get()
-#         login(request, user)
-#         return True
-#     except ObjectDoesNotExist:
-#         user = User.objects.create_user(username)
-#         login(request, user)
-#         return True
-#     except Exception as error:
-#         logger.exception(error)
-#         return False
 
 
 def twitch_token(code):

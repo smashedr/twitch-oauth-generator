@@ -1,0 +1,30 @@
+{% extends "main.html" %}
+{% block title %}Callback{% endblock %}
+{% load staticfiles %}
+{% load home_tags %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+    <div class="row mt-2">
+        <div class="col">
+            <h1>Results</h1>
+
+            {% if request.GET.code %}
+                <p class="lead">OAuth flow complete.</p>
+            {% else %}
+                <p class="lead">OAuth Token:</p>
+                <form class="mb-2">
+                    <label for="access-token" class="sr-only">OAuth Token</label>
+                    <input id="access-token" class="form-control" type="text" value="" onClick="this.select();" readonly>
+                </form>
+            {% endif %}
+
+            <p><a href="{% url 'home:index' %}">Go Back Home</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block tail %}
+    <script type="text/javascript" src="{% static 'main/js/token.js' %}"></script>
+{% endblock %}

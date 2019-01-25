@@ -25,7 +25,6 @@ port            = 3306
 client_id      = xxx
 client_secret  = xxx
 redirect_uri   = xxx
-response_type  = xxx
 grant_type     = xxx
 scope          = xxx
 

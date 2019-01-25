@@ -13,10 +13,35 @@
             <p class="lead">This is site is operated by:
                 <a href="https://www.twitch.tv/smashed926" target="_blank" class="text-info">twitch.tv/smashed926</a></p>
 
-            <p>To generate a token, you click the button below...</p>
-            <p>You will be taken to twitch and asked to grant the specific permissions.</p>
-
-            <a href="{% url 'oauth:login' %}" class="btn btn-info btn-lg my-2" role="button">GENERATE TOKEN</a>
+            <div class="card-deck">
+                <div class="card border-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Authorization Code Flow</h5>
+                        <p class="card-text">For creating app tokens that <strong>expire every 4 hours</strong>.
+                            Used for granting applications access to your features.</p>
+                        <p class="card-text">Only use this if you were told to or you know what you are doing...</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'oauth:code' %}" class="btn btn-outline-info btn-lg my-2" role="button">
+                            Generate Application Token</a>
+                        <a href="https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#oauth-authorization-code-flow"
+                           target="_blank" class="text-info">More Info</a>
+                    </div>
+                </div>
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Implicit Code Flow</h5>
+                        <p class="card-text">These are tokens that do not expire for client use such as chat bots for logging into IRC.</p>
+                        <p class="card-text">This will provide you a token that will last forever.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'oauth:token' %}" class="btn btn-outline-primary btn-lg my-2" role="button">
+                            Generate Client Token</a>
+                        <a href="https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#oauth-implicit-code-flow"
+                           target="_blank">More Info</a>
+                    </div>
+                </div>
+            </div>
 
             <hr>
 
@@ -25,7 +50,7 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Setting</th><th>Setting</th>
+                    <th>Setting</th><th>Current Value</th>
                 </tr>
                 </thead>
                 <tbody>

@@ -31,12 +31,11 @@ USE_L10N = True
 USE_TZ = True
 
 
-#  site specific settings
+#  application settings
 
 TWITCH_CLIENT_ID = CONFIG['twitch']['client_id']
 TWITCH_CLIENT_SECRET = CONFIG['twitch']['client_secret']
 TWITCH_REDIRECT_URI = CONFIG['twitch']['redirect_uri']
-TWITCH_RESPONSE_TYPE = CONFIG['twitch']['response_type']
 TWITCH_GRANT_TYPE = CONFIG['twitch']['grant_type']
 TWITCH_SCOPE = CONFIG['twitch']['scope']
 

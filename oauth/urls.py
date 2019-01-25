@@ -1,12 +1,13 @@
-from django.urls import path
+from django.urls import path, re_path
 
-import oauth.views as oauth
+import oauth.views as views
 
 app_name = 'oauth'
 
 
 urlpatterns = [
-    path('', oauth.do_oauth, name='login'),
-    path('logout/', oauth.log_out, name='logout'),
-    path('callback/', oauth.callback, name='callback'),
+    path('code/', views.do_oauth, name='code'),
+    path('token/', views.do_oauth, name='token'),
+    path('logout/', views.log_out, name='logout'),
+    path('callback/', views.callback, name='callback'),
 ]
