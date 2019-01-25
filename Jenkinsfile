@@ -11,18 +11,18 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }
     environment {
-        DEV_PORT = '10184'
-        PROD_PORT = '10185'
-        DISCORD_ID = "smashed-alerts"
-        COMPOSE_FILE = "docker-compose-swarm.yml"
+        String DEV_PORT = '10123'
+        String PROD_PORT = '10124'
+        String DISCORD_ID = "smashed-alerts"
+        String COMPOSE_FILE = "docker-compose-swarm.yml"
 
-        BUILD_CAUSE = getBuildCause()
-        VERSION = getVersion("${GIT_BRANCH}")
-        GIT_ORG = getGitGroup("${GIT_URL}")
-        GIT_REPO = getGitRepo("${GIT_URL}")
+        String BUILD_CAUSE = getBuildCause()
+        String VERSION = getVersion("${GIT_BRANCH}")
+        String GIT_ORG = getGitGroup("${GIT_URL}")
+        String GIT_REPO = getGitRepo("${GIT_URL}")
 
-        STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
-        SERVICE_NAME = "${STACK_NAME}"
+        GString REPO_NAME = "${GIT_ORG}-${GIT_REPO}"
+        GString SERVICE_NAME = "${REPO_NAME}"
     }
     stages {
         stage('Init') {
@@ -31,7 +31,7 @@ pipeline {
                         "GIT_URL:       ${GIT_URL}\n" +
                         "JOB_NAME:      ${JOB_NAME}\n" +
                         "SERVICE_NAME:  ${SERVICE_NAME}\n" +
-                        "STACK_NAME:    ${STACK_NAME}\n" +
+                        "REPO_NAME:     ${REPO_NAME}\n" +
                         "BUILD_CAUSE:   ${BUILD_CAUSE}\n" +
                         "GIT_BRANCH:    ${GIT_BRANCH}\n" +
                         "VERSION:       ${VERSION}\n"
@@ -47,9 +47,9 @@ pipeline {
                 }
             }
             environment {
-                ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
-                STACK_NAME = "dev_${STACK_NAME}"
-                DOCKER_PORT = "${DEV_PORT}"
+                GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
+                GString STACK_NAME = "dev_${REPO_NAME}"
+                GString DOCKER_PORT = "${DEV_PORT}"
             }
             steps {
                 echo "Starting Dev Deploy..."
@@ -68,9 +68,9 @@ pipeline {
                 }
             }
             environment {
-                ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
-                STACK_NAME = "prod_${STACK_NAME}"
-                DOCKER_PORT = "${PROD_PORT}"
+                GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
+                GString STACK_NAME = "prod_${REPO_NAME}"
+                GString DOCKER_PORT = "${PROD_PORT}"
             }
             steps {
                 echo "Starting Prod Deploy..."
