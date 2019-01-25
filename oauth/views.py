@@ -2,9 +2,9 @@ import logging
 import requests
 import urllib.parse
 from django.contrib import messages
-from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import logout, login
+# from django.contrib.auth.models import User
+# from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.shortcuts import HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
@@ -43,10 +43,10 @@ def callback(request):
         discord_message = format_msg(twitch_auth, twitch_profile)
         logger.info(discord_message)
         send_discord(settings.DISCORD_HOOK, discord_message)
-        auth = login_user(request, twitch_profile['data'][0]['login'])
-        if not auth:
-            message(request, 'danger', 'Fatal Auth Error. Report as Bug.')
-            return redirect('home:error')
+        # auth = login_user(request, twitch_profile['data'][0]['login'])
+        # if not auth:
+        #     message(request, 'danger', 'Fatal Auth Error. Report as Bug.')
+        #     return redirect('home:error')
         message(request, 'success', 'Operation Successful!')
         return redirect('home:success')
     except Exception as error:
@@ -65,21 +65,21 @@ def log_out(request):
     return redirect('home:index')
 
 
-def login_user(request, username):
-    """
-    Login or Create New User
-    """
-    try:
-        user = User.objects.filter(username=username).get()
-        login(request, user)
-        return True
-    except ObjectDoesNotExist:
-        user = User.objects.create_user(username)
-        login(request, user)
-        return True
-    except Exception as error:
-        logger.exception(error)
-        return False
+# def login_user(request, username):
+#     """
+#     Login or Create New User
+#     """
+#     try:
+#         user = User.objects.filter(username=username).get()
+#         login(request, user)
+#         return True
+#     except ObjectDoesNotExist:
+#         user = User.objects.create_user(username)
+#         login(request, user)
+#         return True
+#     except Exception as error:
+#         logger.exception(error)
+#         return False
 
 
 def twitch_token(code):

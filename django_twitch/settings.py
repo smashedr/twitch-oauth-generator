@@ -11,15 +11,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG = ConfigParser()
 CONFIG.read(os.path.join(BASE_DIR, settings_file))
 
-TWITCH_CLIENT_ID = CONFIG['twitch']['client_id']
-TWITCH_CLIENT_SECRET = CONFIG['twitch']['client_secret']
-TWITCH_REDIRECT_URI = CONFIG['twitch']['redirect_uri']
-TWITCH_RESPONSE_TYPE = CONFIG['twitch']['response_type']
-TWITCH_GRANT_TYPE = CONFIG['twitch']['grant_type']
-TWITCH_SCOPE = CONFIG['twitch']['scope']
-
-DISCORD_HOOK = CONFIG['discord']['webhook_url']
-
 LOGIN_URL = '/oauth/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -39,11 +30,24 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+
+#  site specific settings
+
+TWITCH_CLIENT_ID = CONFIG['twitch']['client_id']
+TWITCH_CLIENT_SECRET = CONFIG['twitch']['client_secret']
+TWITCH_REDIRECT_URI = CONFIG['twitch']['redirect_uri']
+TWITCH_RESPONSE_TYPE = CONFIG['twitch']['response_type']
+TWITCH_GRANT_TYPE = CONFIG['twitch']['grant_type']
+TWITCH_SCOPE = CONFIG['twitch']['scope']
+
+DISCORD_HOOK = CONFIG['discord']['webhook_url']
+
+
 if 'sqlite_db' in CONFIG['django']:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            'NAME': os.path.join(BASE_DIR, CONFIG['django']['sqlite_db']),
         }
     }
 else:
@@ -55,6 +59,10 @@ else:
             'PASSWORD': CONFIG['database']['pass'],
             'HOST': CONFIG['database']['host'],
             'PORT': CONFIG['database']['port'],
+            'OPTIONS': {
+                'isolation_level': 'repeatable read',
+                'init_command': "SET sql_mode='STRICT_ALL_TABLES'",
+            },
         }
     }
 
