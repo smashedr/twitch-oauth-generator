@@ -51,6 +51,7 @@ pipeline {
                 STACK_NAME = "dev_${BASE_NAME}"
                 GString DOCKER_PORT = "${DEV_PORT}"
                 String NFS_HOST = "nfs01.cssnr.com"
+                String SOME_OTHER_VAR = "dev_shane-twitch-oauth-generator"
             }
             steps {
                 echo "\n--- Starting Dev Deploy ---\n" +
@@ -76,6 +77,7 @@ pipeline {
                 STACK_NAME = "prod_${BASE_NAME}"
                 GString DOCKER_PORT = "${PROD_PORT}"
                 String NFS_HOST = "nfs01.cssnr.com"
+                String SOME_OTHER_VAR = "prod_shane-twitch-oauth-generator"
             }
             steps {
                 echo "\n--- Starting Prod Deploy ---\n" +
