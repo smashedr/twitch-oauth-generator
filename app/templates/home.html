@@ -55,13 +55,13 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>Client ID</td><td>{% get_config 'twitch' 'client_id' %}</td>
+                    <td>Client ID</td><td>{% get_env 'TWITCH_CLIENT_ID' %}</td>
                 </tr>
                 <tr>
-                    <td>Redirect URI</td><td>{% get_config 'twitch' 'redirect_uri' %}</td>
+                    <td>Redirect URI</td><td>{% get_env 'TWITCH_REDIRECT_URI' %}</td>
                 </tr>
                 <tr>
-                    <td>Scope</td><td>{% get_config 'twitch' 'scope' %}</td>
+                    <td>Scope</td><td>{% get_env 'TWITCH_SCOPE' %}</td>
                 </tr>
                 </tbody>
             </table>
