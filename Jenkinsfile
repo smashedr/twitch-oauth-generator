@@ -11,18 +11,19 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }
     environment {
-        String DEV_PORT = '10184'
-        String PROD_PORT = '10185'
-        String DISCORD_ID = "smashed-alerts"
-        String COMPOSE_FILE = "docker-compose-swarm.yml"
+        DEV_PORT = '10184'
+        PROD_PORT = '10185'
+        DISCORD_ID = "smashed-alerts"
+        COMPOSE_FILE = "docker-compose-swarm.yml"
 
-        String BUILD_CAUSE = getBuildCause()
-        String VERSION = getVersion("${GIT_BRANCH}")
-        String GIT_ORG = getGitGroup("${GIT_URL}")
-        String GIT_REPO = getGitRepo("${GIT_URL}")
+        BUILD_CAUSE = getBuildCause()
+        VERSION = getVersion("${GIT_BRANCH}")
+        GIT_ORG = getGitGroup("${GIT_URL}")
+        GIT_REPO = getGitRepo("${GIT_URL}")
 
-        GString BASE_NAME = "${GIT_ORG}-${GIT_REPO}"
-        GString SERVICE_NAME = "${BASE_NAME}"
+        BASE_NAME = "${GIT_ORG}-${GIT_REPO}"
+        SERVICE_NAME = "${BASE_NAME}"
+        NFS_HOST = "nfs01.cssnr.com"
     }
     stages {
         stage('Init') {
@@ -47,10 +48,9 @@ pipeline {
                 }
             }
             environment {
-                GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
+                ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
                 STACK_NAME = "dev_${BASE_NAME}"
-                GString DOCKER_PORT = "${DEV_PORT}"
-                String NFS_HOST = "nfs01.cssnr.com"
+                DOCKER_PORT = "${DEV_PORT}"
                 NFS_DIRECTORY = "${STACK_NAME}"
             }
             steps {
@@ -73,10 +73,9 @@ pipeline {
                 }
             }
             environment {
-                GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
+                ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
                 STACK_NAME = "prod_${BASE_NAME}"
-                GString DOCKER_PORT = "${PROD_PORT}"
-                String NFS_HOST = "nfs01.cssnr.com"
+                DOCKER_PORT = "${PROD_PORT}"
                 NFS_DIRECTORY = "${STACK_NAME}"
             }
             steps {
