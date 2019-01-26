@@ -61,7 +61,7 @@ secrets:
 
 volumes:
   data_dir:
-    driver: local
+    driver: nfs
     driver_opts:
       type: nfs
       o: "addr=${NFS_HOST},rw"
