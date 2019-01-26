@@ -1,0 +1,63 @@
+version: '3.3'
+
+services:
+  app:
+    build: ./app
+    image: twitch-oauth-generator-app:latest
+    env_file: settings.env
+    command: "gunicorn django_twitch.wsgi:application --workers 2 -b 0.0.0.0:9000"
+    healthcheck:
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      test: ["CMD-SHELL", "bash healthcheck.sh"]
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 1G
+      update_config:
+        parallelism: 1
+        delay: 10s
+    volumes:
+      - data_dir:/data
+
+  nginx:
+    build: ./nginx
+    image: twitch-oauth-generator:latest
+    env_file: settings.env
+    healthcheck:
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      test: ["CMD-SHELL", "bash healthcheck.sh"]
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 512M
+      update_config:
+        parallelism: 1
+        delay: 10s
+    depends_on:
+      - app
+    secrets:
+      - source: cssnr.com.crt
+        target: /etc/ssl/cssnr.com.crt
+      - source: cssnr.com.key
+        target: /etc/ssl/cssnr.com.key
+    ports:
+      - "10184:443"
+    volumes:
+      - data_dir:/data
+
+secrets:
+  cssnr.com.crt:
+    file: /etc/ssl/cssnr.com.crt
+  cssnr.com.key:
+    file: /etc/ssl/cssnr.com.key
+
+volumes:
+  data_dir:

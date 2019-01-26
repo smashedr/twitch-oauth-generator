@@ -1,0 +1,68 @@
+version: '3.3'
+
+services:
+  app:
+    build: ./app
+    image: harbor01.cssnr.com/shane/twitch-oauth-generator-app:${VERSION}
+    env_file: ${ENV_FILE}
+    command: "gunicorn django_twitch.wsgi:application --workers 2 -b 0.0.0.0:9000"
+    healthcheck:
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      test: ["CMD-SHELL", "bash healthcheck.sh"]
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 2G
+      update_config:
+        parallelism: 1
+        delay: 10s
+    volumes:
+      - data_dir:/data
+
+  nginx:
+    build: ./nginx
+    image: harbor01.cssnr.com/shane/twitch-oauth-generator-nginx:${VERSION}
+    env_file: ${ENV_FILE}
+    healthcheck:
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      test: ["CMD-SHELL", "bash healthcheck.sh"]
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 512M
+      update_config:
+        parallelism: 1
+        delay: 10s
+    depends_on:
+      - app
+    secrets:
+      - source: cssnr.com.crt
+        target: /etc/ssl/cssnr.com.crt
+      - source: cssnr.com.key
+        target: /etc/ssl/cssnr.com.key
+    ports:
+      - "${DOCKER_PORT}:443"
+    volumes:
+      - data_dir:/data
+
+secrets:
+  cssnr.com.crt:
+    external: true
+  cssnr.com.key:
+    external: true
+
+volumes:
+  data_dir:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_HOST},rw"
+      device: ":/data/docker/${NFS_DIRECTORY}"
