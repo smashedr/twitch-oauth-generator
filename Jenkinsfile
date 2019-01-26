@@ -50,6 +50,7 @@ pipeline {
                 GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
                 GString STACK_NAME = "dev_${BASE_NAME}"
                 GString DOCKER_PORT = "${DEV_PORT}"
+                String NFS_HOST = "nfs01.cssnr.com"
             }
             steps {
                 echo "Starting Dev Deploy..."
@@ -71,6 +72,7 @@ pipeline {
                 GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
                 GString STACK_NAME = "prod_${BASE_NAME}"
                 GString DOCKER_PORT = "${PROD_PORT}"
+                String NFS_HOST = "nfs01.cssnr.com"
             }
             steps {
                 echo "Starting Prod Deploy..."
