@@ -53,17 +53,16 @@ services:
     volumes:
       - data_dir:/data
 
-secrets:
-  cssnr.com.crt:
-    external: true
-  cssnr.com.key:
-    external: true
-
 volumes:
   data_dir:
     driver: local
     driver_opts:
       type: nfs
       o: "addr=${NFS_HOST},rw"
-      device: ":/data/docker/test/${STACK_NAME}"
+      device: ":/data/docker/${STACK_NAME}"
 
+secrets:
+  cssnr.com.crt:
+    external: true
+  cssnr.com.key:
+    external: true
