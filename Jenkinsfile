@@ -38,7 +38,7 @@ pipeline {
                         "VERSION:       ${VERSION}\n"
                 verifyBuild()
                 sendDiscord("${DISCORD_ID}", "Pipeline Started by: ${BUILD_CAUSE}")
-                getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
+                getConfigs("${SERVICE_NAME}")   // use this to get service configs from deploy-configs
             }
         }
         stage('Dev Deploy') {
@@ -60,7 +60,7 @@ pipeline {
                         "NFS_DIRECTORY: ${NFS_DIRECTORY}\n" +
                         "ENV_FILE:      ${ENV_FILE}\n"
                 sendDiscord("${DISCORD_ID}", "Dev Deploy Started")
-                setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
+                setupNfs("${STACK_NAME}")
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
                 sendDiscord("${DISCORD_ID}", "Dev Deploy Finished")
@@ -86,7 +86,7 @@ pipeline {
                         "NFS_DIRECTORY: ${NFS_DIRECTORY}\n" +
                         "ENV_FILE:      ${ENV_FILE}\n"
                 sendDiscord("${DISCORD_ID}", "Prod Deploy Started")
-                setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
+                setupNfs("${STACK_NAME}")
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
                 sendDiscord("${DISCORD_ID}", "Prod Deploy Finished")
