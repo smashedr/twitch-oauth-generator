@@ -21,8 +21,8 @@ pipeline {
         String GIT_ORG = getGitGroup("${GIT_URL}")
         String GIT_REPO = getGitRepo("${GIT_URL}")
 
-        GString REPO_NAME = "${GIT_ORG}-${GIT_REPO}"
-        GString SERVICE_NAME = "${REPO_NAME}"
+        GString BASE_NAME = "${GIT_ORG}-${GIT_REPO}"
+        GString SERVICE_NAME = "${BASE_NAME}"
     }
     stages {
         stage('Init') {
@@ -31,7 +31,7 @@ pipeline {
                         "GIT_URL:       ${GIT_URL}\n" +
                         "JOB_NAME:      ${JOB_NAME}\n" +
                         "SERVICE_NAME:  ${SERVICE_NAME}\n" +
-                        "REPO_NAME:     ${REPO_NAME}\n" +
+                        "BASE_NAME:     ${BASE_NAME}\n" +
                         "BUILD_CAUSE:   ${BUILD_CAUSE}\n" +
                         "GIT_BRANCH:    ${GIT_BRANCH}\n" +
                         "VERSION:       ${VERSION}\n"
@@ -48,7 +48,7 @@ pipeline {
             }
             environment {
                 GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
-                GString STACK_NAME = "dev_${REPO_NAME}"
+                GString STACK_NAME = "dev_${BASE_NAME}"
                 GString DOCKER_PORT = "${DEV_PORT}"
             }
             steps {
@@ -69,7 +69,7 @@ pipeline {
             }
             environment {
                 GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
-                GString STACK_NAME = "prod_${REPO_NAME}"
+                GString STACK_NAME = "prod_${BASE_NAME}"
                 GString DOCKER_PORT = "${PROD_PORT}"
             }
             steps {
