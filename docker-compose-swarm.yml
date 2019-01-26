@@ -65,4 +65,4 @@ volumes:
     driver_opts:
       type: nfs
       o: "addr=${NFS_HOST},rw"
-      device: ":/data/docker/${STACK_NAME}"
+      device: ":/data/docker/${NFS_HOST}"
