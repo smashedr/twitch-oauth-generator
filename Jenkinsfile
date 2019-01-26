@@ -48,9 +48,8 @@ pipeline {
             }
             environment {
                 GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
-                // GString STACK_NAME = "dev_${BASE_NAME}"
+                STACK_NAME = "dev_${BASE_NAME}"
                 GString DOCKER_PORT = "${DEV_PORT}"
-                String STACK_NAME = "dev_shane-twitch-oag"
                 String NFS_HOST = "nfs01.cssnr.com"
             }
             steps {
@@ -74,9 +73,8 @@ pipeline {
             }
             environment {
                 GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
-                // GString STACK_NAME = "prod_${BASE_NAME}"
+                STACK_NAME = "prod_${BASE_NAME}"
                 GString DOCKER_PORT = "${PROD_PORT}"
-                String STACK_NAME = "prod_shane-twitch-oag"
                 String NFS_HOST = "nfs01.cssnr.com"
             }
             steps {
