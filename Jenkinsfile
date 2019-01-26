@@ -53,7 +53,10 @@ pipeline {
                 String NFS_HOST = "nfs01.cssnr.com"
             }
             steps {
-                echo "Starting Dev Deploy..."
+                echo "\n--- Starting Dev Deploy ---\n" +
+                        "ENV_FILE:      ${ENV_FILE}\n" +
+                        "STACK_NAME:    ${STACK_NAME}\n" +
+                        "DOCKER_PORT:   ${DOCKER_PORT}\n"
                 sendDiscord("${DISCORD_ID}", "Dev Deploy Started")
                 setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
                 stackPush("${COMPOSE_FILE}")
@@ -75,7 +78,10 @@ pipeline {
                 String NFS_HOST = "nfs01.cssnr.com"
             }
             steps {
-                echo "Starting Prod Deploy..."
+                echo "\n--- Starting Prod Deploy ---\n" +
+                        "ENV_FILE:      ${ENV_FILE}\n" +
+                        "STACK_NAME:    ${STACK_NAME}\n" +
+                        "DOCKER_PORT:   ${DOCKER_PORT}\n"
                 sendDiscord("${DISCORD_ID}", "Prod Deploy Started")
                 setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
                 stackPush("${COMPOSE_FILE}")
