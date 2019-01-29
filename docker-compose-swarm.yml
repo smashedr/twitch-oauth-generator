@@ -12,7 +12,7 @@ services:
       retries: 3
       test: ["CMD-SHELL", "bash healthcheck.sh"]
     deploy:
-      replicas: 2
+      mode: global
       resources:
         limits:
           cpus: "4.0"
@@ -33,7 +33,7 @@ services:
       retries: 3
       test: ["CMD-SHELL", "bash healthcheck.sh"]
     deploy:
-      replicas: 2
+      mode: global
       resources:
         limits:
           cpus: "4.0"
