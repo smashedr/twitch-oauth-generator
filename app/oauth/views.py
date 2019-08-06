@@ -53,7 +53,7 @@ def callback(request):
     except Exception as error:
         logger.exception(error)
         message(request, 'danger', 'Fatal Login Auth. Report as Bug.')
-        return redirect('home:error')
+        return redirect('home:index')
 
 
 @require_http_methods(['POST'])
@@ -82,7 +82,10 @@ def twitch_token(code):
     r = requests.post(url, data=data, headers=headers, timeout=10)
     logger.debug('status_code: {}'.format(r.status_code))
     logger.debug('content: {}'.format(r.content))
-    return r.json()
+    if r.ok:
+        return r.json()
+    else:
+        r.raise_for_status()
 
 
 def get_twitch(access_token):
